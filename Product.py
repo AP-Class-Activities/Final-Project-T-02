@@ -8,7 +8,7 @@ class Product:
         self.__load()
         self.__name = name
         self.__explanation = explanation
-        self.__product_number = self.gen_product_number()
+        self.__product_number = self.__gen_product_number()
         self.__save()
     
     def __load(self):
@@ -21,7 +21,7 @@ class Product:
         with open(f"./DATABASE/{self.__store}/products.json", "wt") as products_json:
             json.dump(self.__products_json, products_json)
 
-    def gen_product_number(self):
+    def __gen_product_number(self):
         try:
             last_product_number = int(list(self.__products_json.keys())[-1][2:])
         except IndexError:
