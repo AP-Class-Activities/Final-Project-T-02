@@ -1,6 +1,7 @@
 import json
 
 
+
 class Product:
 
     def __init__(self, store, name, explanation, Price, property):
