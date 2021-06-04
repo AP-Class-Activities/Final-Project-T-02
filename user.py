@@ -24,6 +24,16 @@ class user:
           self.__orders = orders
           self.__email = email
 
+     ##Some restrictions
+
+     password = ""
+     phone_number = ""
+
+          if len(password)<8:
+              raise ValueError('the password should be more than (8) Characters')
+          if len(phone_number)>11 or len(phone_number)<11:
+              raise ValueError('Phone number must have (11) digits')
+
 
     ##setters and getters
 
@@ -65,6 +75,8 @@ class user:
 
      @password.setter
      def password(self, value):
+              if len(password) < 8:
+                     raise ValueError('the password should be more than (8) Characters')
               self.__password = value
 
      @property
@@ -89,6 +101,8 @@ class user:
 
      @phone_number.setter
      def phone_number(self, value):
+              if len(phone_number) > 11 or len(phone_number) < 11:
+                    raise ValueError('Phone number must have (11) digits')
               self.__phone_number = value
 
      @property
