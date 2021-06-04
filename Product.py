@@ -1,11 +1,10 @@
-import json
+import pickle
 
 
 class Product:
 
     def __init__(self, store, name, explanation):
         self.__store = store
-        self.__load()
         self.__name = name
         self.__explanation = explanation
         self.__product_id = self.__gen_product_id()
@@ -13,29 +12,26 @@ class Product:
         self.__comments = []
         self.__save()
 
+        with open(f"./DATABASE/{self.__store}/Products/ProductsList.txt", "at") as products:
+            products.write("\n" + self.__product_id)
+
 
     # -------------- Private Methods --------------
 
-    # to load products information from database
-    def __load(self):
-        with open(f"./DATABASE/{self.__store}/products.json", "rt") as products_json:
-            self.__products_json = json.load(products_json)
-        self.__name, self.__explanation, self.__sellers_prices_stock, self.__comments = self.__products_json[self.__product_id]
-
-
     # to save changes to database
     def __save(self):
-        self.__products_json[self.__product_id] = [self.__name, self.__explanation, self.__sellers_prices_stock, self.__comments]
-
-        with open(f"./DATABASE/{self.__store}/products.json", "wt") as products_json:
-            json.dump(self.__products_json, products_json)
+        with open(f"./DATABASE/{self.__store}/Products/{self.__product_id}.dat", "wb") as dat_file:
+            pickle.dump(self, dat_file)
 
 
     # to generate unique product id
     def __gen_product_id(self):
         try:
-            last_product_id = int(list(self.__products_json.keys())[-1][2:])
-        except IndexError:
+            with open(f"./DATABASE/{self.__store}/Products/ProductsList.txt", "rt") as products:
+                for line in products:
+                    pass
+                last_product_id = int(line[2:])
+        except FileNotFoundError:
             last_product_id = 0  # in case there are no products yet
         
         return "PR" + (6 - len(str(last_product_id+1))) * "0" + str(last_product_id+1)
@@ -43,16 +39,14 @@ class Product:
 
     # -------------- Public Methods --------------
     
-    # to increase/add-to product's stock
-    def add_stock(self, seller, price, stock):
-        self.__load()
+    # to change product's stock or price
+    def change_stock_price(self, seller, price, stock):
         self.__sellers_prices_stock[seller] = (price, stock)
         self.__save()
 
 
     # to add new comments
     def add_comment(self, sender, comment):
-        self.__load()
         self.__comments.append([sender, comment])
         self.__save()
 
@@ -61,12 +55,10 @@ class Product:
 
     @property
     def name(self):
-        self.__load()
         return self.__name
 
     @name.setter
     def name(self, value):
-        self.__load()
         if not isinstance(value, str):
             raise ValueError("name must be a string")
         self.__name = value
@@ -75,12 +67,10 @@ class Product:
 
     @property
     def explanation(self):
-        self.__load()
         return self.__explanation
 
     @explanation.setter
     def explanation(self, value):
-        self.__load()
         if not isinstance(value, str):
             raise ValueError("explanation must be a string")
         self.__explanation = value
@@ -89,18 +79,15 @@ class Product:
 
     @property
     def price(self):
-        self.__load()
         return min([i[0] for i in self.__sellers_prices_stock.values()])
 
 
     @property
     def stock(self):
-        self.__load()
         return sum([i[1] for i in self.__sellers_prices_stock.values()])
 
 
     @property
     def comments(self):
-        self.__load()
         return self.__comments
 
