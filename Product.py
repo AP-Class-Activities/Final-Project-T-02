@@ -3,23 +3,26 @@ import json
 
 class Product:
 
-    def __init__(self, store, name, explanation):
+    def __init__(self, store, name, explanation, Price, property):
         self.__store = store
         self.__load()
         self.__name = name
         self.__explanation = explanation
         self.__product_number = self.__gen_product_number()
         self.__save()
+        self.__Price = Price
+        self.__property = property
+
 
 
     # to load products information from database 
-    def __load(self):
+    def__load(self):
         with open(f"./DATABASE/{self.__store}/products.json", "rt") as products_json:
             self.__products_json = json.load(products_json)
 
 
     # to save changes to database
-    def __save(self):
+    def__save(self):
         self.__products_json[self.__product_number] = [self.__name, self.__explanation]
 
         with open(f"./DATABASE/{self.__store}/products.json", "wt") as products_json:
@@ -34,4 +37,6 @@ class Product:
             last_product_number = 0  # in case there are no products yet
         
         return "PR" + (6 - len(str(last_product_number+1))) * "0" + str(last_product_number+1)
+
+
 
