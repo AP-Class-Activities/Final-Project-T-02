@@ -23,6 +23,7 @@ class user:
           self.__phone_number = phone_number
           self.__orders = orders
           self.__email = email
+         
 
      ##Some restrictions
 
