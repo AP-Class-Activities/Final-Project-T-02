@@ -38,15 +38,21 @@ class Product:
 
 
     # -------------- Public Methods --------------
-    
+
     # to change product's stock or price
     def change_stock_price(self, seller, price, stock):
+        if not isinstance(price, int) and isinstance(stock, int):
+            raise ValueError("price and stock must be integers")
+        
         self.__sellers_prices_stock[seller] = (price, stock)
         self.__save()
 
 
     # to add new comments
     def add_comment(self, sender, comment):
+        if not isinstance(comment, str):
+            raise ValueError("comment must be a string")
+        
         self.__comments.append([sender, comment])
         self.__save()
 
@@ -61,6 +67,7 @@ class Product:
     def name(self, value):
         if not isinstance(value, str):
             raise ValueError("name must be a string")
+        
         self.__name = value
         self.__save()
 
@@ -73,6 +80,7 @@ class Product:
     def explanation(self, value):
         if not isinstance(value, str):
             raise ValueError("explanation must be a string")
+        
         self.__explanation = value
         self.__save()
 
