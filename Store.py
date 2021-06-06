@@ -1,4 +1,3 @@
-from Product import Product
 import pickle
 import os
 from Product import Product
@@ -13,8 +12,8 @@ class Store:
         self.__owner_name = owner_name
         self.__owner_password = owner_password
         self.__products = []
-        self.__sellers = {}
-        self.__users = {}
+        self.__sellers = []
+        self.__users = []
         self.__pending_sellers = []
         self.__pending_products = []
         self.__save()
@@ -63,7 +62,20 @@ class Store:
 
     # -------------- Public Methods --------------
 
-    # to make new sellers
+    # to add new products to pending list
+    def add_new_product(self, product):
+        if not isinstance(product, list):
+            raise ValueError("product must be a list with product's name and explanation in it")
+        if len(product) != 2:
+            raise ValueError("product must only contain name and explanation")
+        if not (isinstance(product[0], str) and isinstance(product[1], str)):
+            raise ValueError("name and explanation must be strings")
+
+        self.__pending_products.append(product)
+        self.__save()
+
+
+    # to add new sellers to pending list
     def seller_sign_up(self, name, email, password, location):
         for seller in self.__sellers:
             if email == seller.email:
@@ -75,6 +87,7 @@ class Store:
 
         new_seller = [name, email, password, location]
         self.__pending_sellers.append(new_seller)
+        self.__save()
     
     # for sellers' log-in
     def seller_sign_in(self, email, password):
@@ -117,9 +130,6 @@ class Store:
             raise ValueError("product number must be an integer")
         
         Product(*self.__pending_products[product_number])
-
-
-    # add_new_product method soon
 
 
     # -------------- Setters and Getters --------------
