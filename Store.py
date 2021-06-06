@@ -43,24 +43,24 @@ class Store:
     def __load(self):
 
         # loading products
-        with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt") as products_list:
+        with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt", "rt") as products_list:
             for line in products_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Products/{line[:len(line)-1]}.dat") as product:
+                    with open(f"./DATABASE/{self.__name}/Products/{line[:len(line)-1]}.dat", "rb") as product:
                         self.__products.append(pickle.load(product))
 
         # loading sellers
-        with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt") as sellers_list:
+        with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "rt") as sellers_list:
             for line in sellers_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Sellers/{line[:len(line)-1]}.dat") as seller:
+                    with open(f"./DATABASE/{self.__name}/Sellers/{line[:len(line)-1]}.dat", "rb") as seller:
                         self.__sellers.append(pickle.load(seller))
 
         # loading users
-        with open(f"./DATABASE/{self.__name}/Users/SellersList.txt") as users_list:
+        with open(f"./DATABASE/{self.__name}/Users/SellersList.txt", "rt") as users_list:
             for line in users_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Users/{line[:len(line)-1]}.dat") as user:
+                    with open(f"./DATABASE/{self.__name}/Users/{line[:len(line)-1]}.dat", "rb") as user:
                         self.__users.append(pickle.load(user))
 
 
@@ -108,6 +108,24 @@ class Store:
         return False
 
 
+    # to remove sellers
+    def remove_seller(self, seller_id):
+
+        # value constraint:
+        if not isinstance(seller_id, str):
+            raise ValueError("seller id must be a string")
+
+        # removing related file and from list
+        if os.path.exists(f"./DATABASE/{self.__name}/Sellers/{seller_id}.dat"):
+            os.remove(f"./DATABASE/{self.__name}/Sellers/{seller_id}.dat")
+            with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "rt") as sellers_list_file:
+                sellers_list = sellers_list_file.readlines()
+            with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "wt") as sellers_list_file:
+                for line in sellers_list:
+                    if line.strip("\n") != seller_id:
+                        sellers_list_file.write(line)
+
+
     # to make new users
     def user_sign_up(self, name, email, password, location):
 
@@ -131,6 +149,24 @@ class Store:
             if user.email == email and user.password == password:
                 return True
         return False
+
+
+    # to remove users
+    def remove_user(self, user_id):
+
+        # value constraint:
+        if not isinstance(user_id, str):
+            raise ValueError("user id must be a string")
+
+        # removing related file and from list
+        if os.path.exists(f"./DATABASE/{self.__name}/Users/{user_id}.dat"):
+            os.remove(f"./DATABASE/{self.__name}/Users/{user_id}.dat")
+            with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "rt") as users_list_file:
+                users_list = users_list_file.readlines()
+            with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "wt") as users_list_file:
+                for line in users_list:
+                    if line.strip("\n") != user_id:
+                        users_list_file.write(line)
 
 
     # for store owner to allow new sellers
