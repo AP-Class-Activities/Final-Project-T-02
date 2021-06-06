@@ -1,5 +1,7 @@
 import pickle
 import os
+import random
+import string
 from Product import Product
 from Seller import Seller
 from User import User
@@ -16,6 +18,7 @@ class Store:
         self.__users = []
         self.__pending_sellers = []
         self.__pending_products = []
+        self.__promo_codes = {}
         self.__save()
 
         # creating necessary directories
@@ -38,6 +41,7 @@ class Store:
 
     # to load saved data from database
     def __load(self):
+
         # loading products
         with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt") as products_list:
             for line in products_list:
@@ -64,6 +68,8 @@ class Store:
 
     # to add new products to pending list
     def add_new_product(self, product):
+
+        # value constraints:
         if not isinstance(product, list):
             raise ValueError("product must be a list with product's name and explanation in it")
         if len(product) != 2:
@@ -77,6 +83,9 @@ class Store:
 
     # to add new sellers to pending list
     def seller_sign_up(self, name, email, password, location):
+        self.__load()
+
+        # value constraints:
         for seller in self.__sellers:
             if email == seller.email:
                 raise ValueError("email already used")
@@ -88,9 +97,11 @@ class Store:
         new_seller = [name, email, password, location]
         self.__pending_sellers.append(new_seller)
         self.__save()
-    
+
+
     # for sellers' log-in
     def seller_sign_in(self, email, password):
+        self.__load()
         for seller in self.__sellers:
             if seller.email == email and seller.password == password:
                     return True
@@ -99,6 +110,9 @@ class Store:
 
     # to make new users
     def user_sign_up(self, name, email, password, location):
+
+        # value constraints:
+        self.__load()
         for user in self.__users:
             if user.email == email:
                 raise ValueError("email already used")
@@ -109,8 +123,10 @@ class Store:
 
         User(self, name, email, password, location)
 
+
     # for users' log-in
     def user_sign_in(self, email, password):
+        self.__load()
         for user in self.__users:
             if user.email == email and user.password == password:
                 return True
@@ -119,17 +135,44 @@ class Store:
 
     # for store owner to allow new sellers
     def confirm_new_seller(self, seller_number):
+        
+        # value constraint:
         if not isinstance(seller_number, int):
             raise ValueError("seller number must be an integer")
 
         Seller(*self.__pending_sellers[seller_number])
 
+
     # for store owner to allow new products
     def confirm_new_product(self, product_number):
+
+        # value constraint:
         if not isinstance(product_number, int):
             raise ValueError("product number must be an integer")
         
         Product(*self.__pending_products[product_number])
+
+
+    # to generate a promo code
+    def gen_promo_code(self, expiration=30, products=None):
+
+        # value constraints:
+        if not isinstance(expiration, int):
+            raise ValueError("expiration must be an integer indicating the number of days")
+        if Product:  # if it's not None
+            if not isinstance(products, list):
+                raise ValueError("products must be a list of products")
+            for product in products:
+                if not isinstance(product, Product):
+                    raise ValueError("products must only contain objects of type Product")
+        else:
+            self.__load()
+            products = self.__products  # if no products are specified, all products will be used
+
+        promo_code = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+        self.__promo_codes[promo_code] = (expiration, products)
+        self.__save()
+        return promo_code
 
 
     # -------------- Setters and Getters --------------
@@ -199,4 +242,9 @@ class Store:
     @property
     def pending_products(self):
         return self.__pending_products
+
+
+    @property
+    def promo_codes(self):
+        return list(self.__promo_codes.keys())
 
