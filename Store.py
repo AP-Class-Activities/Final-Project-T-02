@@ -154,12 +154,14 @@ class Store:
 
 
     # to generate a promo code
-    def gen_promo_code(self, expiration=30, products=None):
+    def gen_promo_code(self, percentage, expiration=30, products=None, users=None):
 
         # value constraints:
+        if not isinstance(percentage, int):
+            raise ValueError("percentage must be an integer")
         if not isinstance(expiration, int):
             raise ValueError("expiration must be an integer indicating the number of days")
-        if Product:  # if it's not None
+        if products:  # if it's not None
             if not isinstance(products, list):
                 raise ValueError("products must be a list of products")
             for product in products:
@@ -168,9 +170,19 @@ class Store:
         else:
             self.__load()
             products = self.__products  # if no products are specified, all products will be used
+        if users:  # if it's not None
+            if not isinstance(users, list):
+                raise ValueError("users must be a list of users")
+            for user in users:
+                if not isinstance(user, User):
+                    raise ValueError("users must only contain objects of type User")
+        else:
+            self.__load()
+            users = self.__users  # if no users are specified, all users will be used
+
 
         promo_code = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-        self.__promo_codes[promo_code] = (expiration, products)
+        self.__promo_codes[promo_code] = (percentage, expiration, products, users)
         self.__save()
         return promo_code
 
