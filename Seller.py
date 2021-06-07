@@ -1,11 +1,32 @@
+import pickle
+
 class Seller:
     def __init__(self,store,name,family,address,phone,email):
         self.__store = store
         self.__name = name
-        self.__family=family
+        self.__family = family
         self.__address = address
         self.__phone = phone
         self.__email = email
+        self.__selller_id = self.__gen_seller_id()
+
+
+    def __gen_seller_id(self):
+        try:
+            with open(f"./DATABASE/{self.__store}/Seller/SellerList.txt", "rt") as seller:
+                for line in seller:
+                    pass
+                last_seller_id = int(line[2:].strip("\n"))
+        except FileNotFoundError:
+            last_seller_id = 0  # in case there are no sellers yet
+        
+        return "PR" + (6 - len(str(last_seller_id+1))) * "0" + str(last_seller_id+1)
+
+
+    def __save(self):
+        with open(f"./DATABASE/{self.__store}/Seller/{self.__seller_id}.dat","wb") as dat_file: 
+            pickle.dump(self, dat_file)
+
 
     # setters and getters
     @property
