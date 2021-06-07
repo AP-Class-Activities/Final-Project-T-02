@@ -86,6 +86,11 @@ class Product:
 
 
     @property
+    def product_id(self):
+        return self.__product_id
+
+
+    @property
     def price(self):
         return min([i[0] for i in self.__sellers_prices_stock.values()])
 
