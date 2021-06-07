@@ -27,6 +27,7 @@ class Store:
         os.mkdir(f"./DATABASE/{self.__name}/Products")
         os.mkdir(f"./DATABASE/{self.__name}/Sellers")
         os.mkdir(f"./DATABASE/{self.__name}/Users")
+        os.mkdir(f"./DATABASE/{self.__name}/Purchases")
 
         with open(f"./DATABASE/StoresList.txt", "at") as stores:
             stores.write("\n" + self.__name)
