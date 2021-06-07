@@ -2,6 +2,7 @@ import pickle
 import os
 import random
 import string
+import datetime
 from Product import Product
 from Seller import Seller
 from User import User
@@ -179,6 +180,12 @@ class Store:
         Seller(*self.__pending_sellers[seller_number])
 
 
+    # for sellers to add products to pending list
+    def add_pending_product(self, name, explanation):
+        self.__pending_products.append((self, name, explanation))
+        self.__save()
+
+    
     # for store owner to allow new products
     def confirm_new_product(self, product_number):
 
@@ -216,11 +223,22 @@ class Store:
             self.__load()
             users = self.__users  # if no users are specified, all users will be used
 
-
         promo_code = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         self.__promo_codes[promo_code] = (percentage, expiration, products, users)
         self.__save()
         return promo_code
+
+
+    # to get profits within desired period
+    def profit(self, start_date, end_date):
+        sum_profits = 0
+        start_date = datetime.datetime(*[int(_) for _ in start_date.split("-")])
+        end_date = datetime.datetime(*[int(_) for _ in end_date.split("-")])
+        for file in os.listdir(f"./DATABASE/{self.__name}/Purchases"):
+            file_date = datetime.datetime(*[int(_) for _ in file[:10].split("-")])
+            if start_date < file_date < end_date:
+                with open(f"./DATABASE/{self.__name}/Purchases/{file}", "rt") as file_info:
+                    sum_profits += 0.2 * list(file_info)[1]
 
 
     # -------------- Setters and Getters --------------
