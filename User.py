@@ -4,6 +4,9 @@ Author: Anita Karimi
 Email: anita.karimi.17@gmail.com
 
 '''
+import pickle
+import os
+import random
 
 class user:
      def __init__(self, name, lastname, location, username, password, phone_number, email):
@@ -15,26 +18,29 @@ class user:
           self.__email = email
           self.__save()
 
-#Methods
+     #directories
+     os.mkdir(f"./DATABASE/{ self.__name }/Users")
+
+   #Methods
 
      #create a new user
 
      def create_new_user(self, name, lastname, password, phone_number, location, email):
 
          self.__load()
-         for user in self.__user:
+         for user in self.__users:
              if user.phone_number == phone_number:
                  raise ValueError("This phone number already used")
          if len(password) != 8:
              raise ValueError("the password should be more than (8) Characters")
-         User(self, name, lastname, password, phone_number, location, email)
+         user(self, name, lastname, password, phone_number, location, email)
 
 
      #user sign-in
 
      def user_sign_in(self, username, password):
         self.__load()
-        for user in self.__user:
+        for user in self.__users:
             if user.username == username and user.password == password:
                 return True
             else:
