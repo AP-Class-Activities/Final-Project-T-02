@@ -29,6 +29,13 @@ class Store:
         os.mkdir(f"./DATABASE/{self.__name}/Users")
         os.mkdir(f"./DATABASE/{self.__name}/Purchases")
 
+        with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt", "wt") as _:
+            pass
+        with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "wt") as _:
+            pass
+        with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "wt") as _:
+            pass
+
         with open(f"./DATABASE/StoresList.txt", "at") as stores:
             stores.write("\n" + self.__name)
 
@@ -48,55 +55,68 @@ class Store:
         with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt", "rt") as products_list:
             for line in products_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Products/{line[:len(line)-1]}.dat", "rb") as product:
+                    with open(f"./DATABASE/{self.__name}/Products/{line}.dat", "rb") as product:
                         self.__products.append(pickle.load(product))
 
         # loading sellers
         with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "rt") as sellers_list:
             for line in sellers_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Sellers/{line[:len(line)-1]}.dat", "rb") as seller:
+                    with open(f"./DATABASE/{self.__name}/Sellers/{line}.dat", "rb") as seller:
                         self.__sellers.append(pickle.load(seller))
 
         # loading users
-        with open(f"./DATABASE/{self.__name}/Users/SellersList.txt", "rt") as users_list:
+        with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "rt") as users_list:
             for line in users_list:
                 if line != "\n":
-                    with open(f"./DATABASE/{self.__name}/Users/{line[:len(line)-1]}.dat", "rb") as user:
+                    with open(f"./DATABASE/{self.__name}/Users/{line}.dat", "rb") as user:
                         self.__users.append(pickle.load(user))
+
+    # to load saved data from database
+    def __load_locals(self):
+        with open(f"./DATABASE/{self.__name}.dat", "rb") as self_file:
+            saved = pickle.load(self_file)
+            self.__name, self.__owner_name, self.__owner_password, self.__pending_sellers, self.__pending_products,\
+            self.__promo_codes = saved._Store__name, saved._Store__owner_name, saved._Store__owner_password,\
+            saved._Store__pending_sellers, saved._Store__pending_products, saved._Store__promo_codes
 
 
     # -------------- Public Methods --------------
 
     # to add new products to pending list
-    def add_new_product(self, product):
+    def add_new_product(self, name, explanation):
 
         # value constraints:
-        if not isinstance(product, list):
-            raise ValueError("product must be a list with product's name and explanation in it")
-        if len(product) != 2:
-            raise ValueError("product must only contain name and explanation")
-        if not (isinstance(product[0], str) and isinstance(product[1], str)):
+        if not (isinstance(name, str) and isinstance(explanation, str)):
             raise ValueError("name and explanation must be strings")
 
-        self.__pending_products.append(product)
+        self.__load_locals()
+        self.__pending_products.append([self.__name, name, explanation])
         self.__save()
 
 
     # to add new sellers to pending list
-    def seller_sign_up(self, name, email, password, location):
+    def seller_sign_up(self, first_name, last_name, password, location, phone, email):
         self.__load()
 
         # value constraints:
+        for _ in (first_name, last_name, password, phone, email):
+            if not isinstance(_, str):
+                raise ValueError("first_name, last_name, password, phone and email must be strings")
         for seller in self.__sellers:
             if email == seller.email:
                 raise ValueError("email already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
+        if not (isinstance(location, tuple) and len(location) == 2):
+            raise ValueError("location must be a tuple of two floating points")
         if not (isinstance(location[0], float) and isinstance(location[1], float)):
             raise ValueError("location must be a tuple of two floating points")
+        if len(phone) != 11:
+            raise ValueError("phone number must have 11 characters")
 
-        new_seller = [name, email, password, location]
+        new_seller = [self.__name, first_name, last_name, password, location, phone, email]
+        self.__load_locals()
         self.__pending_sellers.append(new_seller)
         self.__save()
 
@@ -180,12 +200,6 @@ class Store:
 
         Seller(*self.__pending_sellers[seller_number])
 
-
-    # for sellers to add products to pending list
-    def add_pending_product(self, name, explanation):
-        self.__pending_products.append((self, name, explanation))
-        self.__save()
-
     
     # for store owner to allow new products
     def confirm_new_product(self, product_number):
@@ -225,6 +239,7 @@ class Store:
             users = self.__users  # if no users are specified, all users will be used
 
         promo_code = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+        self.__load_locals()
         self.__promo_codes[promo_code] = (percentage, expiration, products, users)
         self.__save()
         return promo_code
@@ -240,12 +255,14 @@ class Store:
             if start_date < file_date < end_date:
                 with open(f"./DATABASE/{self.__name}/Purchases/{file}", "rt") as file_info:
                     sum_profits += 0.2 * list(file_info)[1]
+        return sum_profits
 
 
     # -------------- Setters and Getters --------------
 
     @property
     def name(self):
+        self.__load_locals()
         return self.__name
 
     @name.setter
@@ -259,6 +276,7 @@ class Store:
 
     @property
     def owner_name(self):
+        self.__load_locals()
         return self.__owner_name
     
     @owner_name.setter
@@ -272,6 +290,7 @@ class Store:
 
     @property
     def owner_password(self):
+        self.__load_locals()
         return self.__owner_password
     
     @owner_password.setter
@@ -303,15 +322,18 @@ class Store:
 
     @property
     def pending_sellers(self):
+        self.__load_locals()
         return self.__pending_sellers
 
 
     @property
     def pending_products(self):
+        self.__load_locals()
         return self.__pending_products
 
 
     @property
     def promo_codes(self):
+        self.__load_locals()
         return list(self.__promo_codes.keys())
 

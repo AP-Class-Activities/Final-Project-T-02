@@ -31,7 +31,7 @@ class Product:
                 for line in products:
                     pass
                 last_product_id = int(line[2:])
-        except FileNotFoundError:
+        except UnboundLocalError:
             last_product_id = 0  # in case there are no products yet
         
         return "PR" + (6 - len(str(last_product_id+1))) * "0" + str(last_product_id+1)
