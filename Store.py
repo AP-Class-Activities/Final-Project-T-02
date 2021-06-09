@@ -102,10 +102,12 @@ class Store:
         # value constraints:
         for _ in (first_name, last_name, password, phone, email):
             if not isinstance(_, str):
-                raise ValueError("first_name, last_name, password, phone and email must be strings")
+                raise ValueError("first name, last name, password, phone and email must be strings")
         for seller in self.__sellers:
             if email == seller.email:
                 raise ValueError("email already used")
+            if phone == seller.phone:
+                raise ValueError("phone number already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
         if not (isinstance(location, tuple) and len(location) == 2):
@@ -122,11 +124,11 @@ class Store:
 
 
     # for sellers' log-in
-    def seller_sign_in(self, email, password):
+    def seller_sign_in(self, phone, password):
         self.__load()
         for seller in self.__sellers:
-            if seller.email == email and seller.password == password:
-                    return True
+            if seller.phone == phone and seller.password == password:
+                    return seller
         return False
 
 
@@ -149,19 +151,28 @@ class Store:
 
 
     # to make new users
-    def user_sign_up(self, name, email, password, location):
+    def user_sign_up(self, first_name, last_name, password, location, phone, email):
+        self.__load
 
         # value constraints:
-        self.__load()
+        for _ in (first_name, last_name, password, phone, email):
+            if not isinstance(_, str):
+                raise ValueError("first name, last name, password, phone and email must be strings")
         for user in self.__users:
-            if user.email == email:
+            if email == user.email:
                 raise ValueError("email already used")
+            if phone == user.phone:
+                raise ValueError("phone number already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
+        if not (isinstance(location, tuple) and len(location) == 2):
+            raise ValueError("location must be a tuple of two floating points")
         if not (isinstance(location[0], float) and isinstance(location[1], float)):
             raise ValueError("location must be a tuple of two floating points")
+        if len(phone) != 11:
+            raise ValueError("phone number must have 11 characters")
 
-        User(self, name, email, password, location)
+        User(self, first_name, last_name, password, location, phone, email)
 
 
     # for users' log-in
