@@ -44,7 +44,16 @@ class Product:
         if not isinstance(price, int) and isinstance(stock, int):
             raise ValueError("price and stock must be integers")
         
-        self.__sellers_prices_stock[seller] = (price, stock)
+        self.__sellers_prices_stock[seller] = [price, stock]
+        self.__save()
+
+
+    # to decrease stock after a purchase
+    def decrease_stock(self, seller, number):
+        if number > self.__sellers_prices_stock[seller][1]:
+            raise ValueError("there are not enough products in stock")
+
+        self.__sellers_prices_stock[seller][1] -= number
         self.__save()
 
 
@@ -55,6 +64,14 @@ class Product:
         
         self.__comments.append([sender, comment])
         self.__save()
+
+
+    # to get price of a particular seller
+    def price(self, seller):
+        if not (seller in self.sellers):
+            raise ValueError("no such seller")
+
+        return self.__sellers_prices_stock[seller][0]
 
 
     # -------------- Setters and Getters --------------
@@ -91,16 +108,24 @@ class Product:
 
 
     @property
-    def price(self):
+    def least_price(self):
         return min([i[0] for i in self.__sellers_prices_stock.values()])
 
 
     @property
-    def stock(self):
+    def sum_stocks(self):
         return sum([i[1] for i in self.__sellers_prices_stock.values()])
 
 
     @property
     def comments(self):
         return self.__comments
+
+    @property
+    def sellers(self):
+        _ = []
+        for seller in list(self.__sellers_prices_stock.keys()):
+            if self.__sellers_prices_stock[seller][1] > 0:
+                _.append(seller)
+        return _
 
