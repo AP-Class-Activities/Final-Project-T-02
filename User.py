@@ -84,6 +84,7 @@ class User:
          if self.__balance > sum:
               return True
 
+
      #Add a new comments
 
      def add_comment(self, sender, comment):
