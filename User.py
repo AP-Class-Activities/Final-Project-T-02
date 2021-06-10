@@ -28,7 +28,9 @@ class User:
 
      #directories
 
-     os.mkdir(f"./DATABASE/{self.__name }/User")
+     os.mkdir(f"./DATABASE/{self.__name }/Users")
+     os.mkdir(f"./DATABASE/{self.__name}/Products")
+     os.mkdir(f"./DATABASE/{self.__name}/Sellers")
 
 
    #Methods
@@ -38,7 +40,7 @@ class User:
      def create_new_user(self, name, lastname, password, phone_number, location):
 
          self.__load()
-         for user in self.__user:
+         for user in self.__Users:
              if user.phone_number == phone_number:
                  raise ValueError("This phone number already used")
          if len(password) != 8:
@@ -51,7 +53,7 @@ class User:
 
      def user_sign_in(self, username, password):
         self.__load()
-        for user in self.__user:
+        for user in self.__Users:
             if user.username == username and user.password == password:
                 return True
             else:
@@ -59,11 +61,37 @@ class User:
 
      #Increase the wallet balance
 
-     def Increase_wallet_balance(self, balance):
+     def Increase_wallet_balance(self, balance, addition):
          addition = 0
-         for user in self.__user:
+         for user in self.__Users:
              user.__balance += addition
              break
+
+     #Add a product from the store to the shopping cart
+
+     def add_product_to_shopping_cart(self, product, seller, number):
+         self.__shopping_cart = []
+         sellers_list = product.sellers
+         self.__shopping_cart.append(product.price(seller.name))
+         product.decrease_stock() -= number
+
+     #Pay for shopping cart products
+
+     def pay(self,number, product, seller):
+         sum = 0
+         for x in self.__shopping_cart:
+              sum += (product.price(seller.name) * number
+         if self.__balance > sum:
+              return True
+
+     #Add a new comments
+
+     def add_comment(self, sender, comment):
+         if not isinstance(comment, str):
+             raise ValueError("comment must be a string")
+         self.__comments.append([sender, comment])
+         self.__save()
+
 
      #setters and getters
 
