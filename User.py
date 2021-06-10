@@ -12,7 +12,7 @@ from Seller import Seller
 
 
 class User:
-     def __init__(self,store, name, lastname, location, password, phone_number, email, shopping_cart, balance):
+     def __init__(self,store, name, lastname, location, password, phone_number, email):
          self.__store = store
          self.__name = name
          self.__lastname = lastname
@@ -20,8 +20,8 @@ class User:
          self.__password = password
          self.__phone_number = phone_number
          self.__email = email
-         self.__shopping_cart = shopping_cart
-         self.__balance = balance
+         self.__shopping_cart = []
+         self.__balance = 0
          self.__save()
 
 
@@ -35,19 +35,6 @@ class User:
 
    #Methods
 
-     #create a new user
-
-     def create_new_user(self, name, lastname, password, phone_number, location):
-
-         self.__load()
-         for user in self.__Users:
-             if user.phone_number == phone_number:
-                 raise ValueError("This phone number already used")
-         if len(password) != 8:
-             raise ValueError("the password should be more than (8) Characters")
-
-         user(self, name, lastname, password, phone_number, location)
-
 
      #user sign-in
 
@@ -59,27 +46,36 @@ class User:
             else:
                 return False
 
+
+    # loading users
+
+     with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "rt") as users_list:
+         for line in users_list:
+             if line != "\n":
+                 with open(f"./DATABASE/{self.__name}/Users/{line}.dat", "rb") as user:
+                     self.__users.append(pickle.load(user))
+
      #Increase the wallet balance
 
-     def Increase_wallet_balance(self, balance, addition):
+     def Increase_wallet_balance(self, addition):
          addition = 0
-         for user in self.__Users:
+         if addition>0:
              user.__balance += addition
-             break
+
+
 
      #Add a product from the store to the shopping cart
 
      def add_product_to_shopping_cart(self, product, seller, number):
-         self.__shopping_cart = []
          sellers_list = product.sellers
-         self.__shopping_cart.append(product.price(seller.name))
-         product.decrease_stock() -= number
+         self.__shopping_cart.append(product.sellers(seller.name)
+         product.decrease_stock(seller, number)
 
      #Pay for shopping cart products
 
      def pay(self,number, product, seller):
          sum = 0
-         for x in self.__shopping_cart:
+         for product in self.__shopping_cart:
               sum += (product.price(seller.name) * number
          if self.__balance > sum:
               return True
