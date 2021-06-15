@@ -84,14 +84,16 @@ class Store:
     # -------------- Public Methods --------------
 
     # to add new products to pending list
-    def add_new_product(self, name, explanation):
+    def add_new_product(self, name, explanation, image='./DATABASE/ProductPic.png'):
 
         # value constraints:
-        if not (isinstance(name, str) and isinstance(explanation, str)):
-            raise ValueError("name and explanation must be strings")
+        if not (isinstance(name, str) and isinstance(explanation, str) and isinstance(image, str)):
+            raise ValueError("name, explanation and image path must be strings")
+        if not image.lower().endswith((".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")):
+            raise ValueError("image format not supported")
 
         self.__load_locals()
-        self.__pending_products.append([self.__name, name, explanation])
+        self.__pending_products.append([self.__name, name, explanation, image])
         self.__save()
 
 

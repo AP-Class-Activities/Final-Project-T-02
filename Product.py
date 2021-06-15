@@ -3,7 +3,7 @@ import pickle
 
 class Product:
 
-    def __init__(self, store, name, explanation, image='./DATABASE/ProductPic.png'):
+    def __init__(self, store, name, explanation, image):
         self.__store = store
         self.__name = name
         self.__explanation = explanation
