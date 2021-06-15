@@ -3,13 +3,14 @@ import pickle
 
 class Product:
 
-    def __init__(self, store, name, explanation):
+    def __init__(self, store, name, explanation, image='./DATABASE/ProductPic.png'):
         self.__store = store
         self.__name = name
         self.__explanation = explanation
         self.__product_id = self.__gen_product_id()
         self.__sellers_prices_stock = {}
         self.__comments = []
+        self.__image = image
         self.__save()
 
         with open(f"./DATABASE/{self.__store}/Products/ProductsList.txt", "at") as products:
@@ -103,6 +104,20 @@ class Product:
 
 
     @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, value):
+        if not isinstance(value, str):
+            raise ValueError("image path must be a string")
+        if not value.lower().endswith((".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")):
+            raise ValueError("image format not supported")
+        self.__image = value
+        self.__save()
+
+
+    @property
     def product_id(self):
         return self.__product_id
 
@@ -123,9 +138,9 @@ class Product:
 
     @property
     def sellers(self):
-        _ = []
+        sellers_list = []
         for seller in list(self.__sellers_prices_stock.keys()):
             if self.__sellers_prices_stock[seller][1] > 0:
-                _.append(seller)
-        return _
-
+                sellers_list.append(seller)
+        return sellers_list
+    
