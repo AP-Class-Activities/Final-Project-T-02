@@ -84,7 +84,7 @@ class Store:
     # -------------- Public Methods --------------
 
     # to add new products to pending list
-    def add_new_product(self, name, explanation, image='./DATABASE/ProductPic.png'):
+    def add_new_product(self, name, explanation, image='./DATABASE/Icons/ProductPic.png'):
 
         # value constraints:
         if not (isinstance(name, str) and isinstance(explanation, str) and isinstance(image, str)):
