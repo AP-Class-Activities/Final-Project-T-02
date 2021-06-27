@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         # Layout
         self.layout = QStackedLayout()
         central_widget = QWidget()
+        central_widget.setStyleSheet("background-color:rgb(206,242,210);")
         central_widget.setLayout(self.layout)
         self.setCentralWidget(central_widget)
 
