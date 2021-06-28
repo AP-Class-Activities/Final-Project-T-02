@@ -11,6 +11,13 @@ from User import User
 class Store:
     
     def __init__(self, name, owner_name, owner_password):
+        if not isinstance(name, str):
+            raise ValueError("name must be a string")
+        if not isinstance(owner_name, str):
+            raise ValueError("owner name must be a string")
+        if not (isinstance(owner_password, str) and len(owner_password) == 8):
+            raise ValueError("owner password must be a string of 8 characters")
+                     
         self.__name = name
         self.__owner_name = owner_name
         self.__owner_password = owner_password
@@ -20,6 +27,7 @@ class Store:
         self.__pending_sellers = []
         self.__pending_products = []
         self.__promo_codes = {}
+        self.__purchases = []
         self.__save()
 
         # creating necessary directories
@@ -53,38 +61,45 @@ class Store:
 
         # loading products
         with open(f"./DATABASE/{self.__name}/Products/ProductsList.txt", "rt") as products_list:
+            self.__products = []
             for line in products_list:
                 if line != "\n":
+                    line = line.strip('\n')
                     with open(f"./DATABASE/{self.__name}/Products/{line}.dat", "rb") as product:
                         self.__products.append(pickle.load(product))
 
         # loading sellers
         with open(f"./DATABASE/{self.__name}/Sellers/SellersList.txt", "rt") as sellers_list:
+            self.__sellers = []
             for line in sellers_list:
                 if line != "\n":
+                    line = line.strip('\n')
                     with open(f"./DATABASE/{self.__name}/Sellers/{line}.dat", "rb") as seller:
                         self.__sellers.append(pickle.load(seller))
 
         # loading users
         with open(f"./DATABASE/{self.__name}/Users/UsersList.txt", "rt") as users_list:
+            self.__users = []
             for line in users_list:
                 if line != "\n":
+                    line = line.strip('\n')
                     with open(f"./DATABASE/{self.__name}/Users/{line}.dat", "rb") as user:
                         self.__users.append(pickle.load(user))
+
 
     # to load saved data from database
     def __load_locals(self):
         with open(f"./DATABASE/{self.__name}.dat", "rb") as self_file:
             saved = pickle.load(self_file)
             self.__name, self.__owner_name, self.__owner_password, self.__pending_sellers, self.__pending_products,\
-            self.__promo_codes = saved._Store__name, saved._Store__owner_name, saved._Store__owner_password,\
-            saved._Store__pending_sellers, saved._Store__pending_products, saved._Store__promo_codes
+            self.__promo_codes, self.__purchases = saved._Store__name, saved._Store__owner_name, saved._Store__owner_password,\
+            saved._Store__pending_sellers, saved._Store__pending_products, saved._Store__promo_codes, saved._Store__purchases
 
 
     # -------------- Public Methods --------------
 
     # to add new products to pending list
-    def add_new_product(self, name, explanation, image='./DATABASE/Icons/ProductPic.png'):
+    def add_new_product(self, name, explanation, image):
 
         # value constraints:
         if not (isinstance(name, str) and isinstance(explanation, str) and isinstance(image, str)):
@@ -94,6 +109,12 @@ class Store:
 
         self.__load_locals()
         self.__pending_products.append([self.__name, name, explanation, image])
+        self.__save()
+
+
+    # to add a new purchase
+    def add_purchase(self, purchase):
+        self.__purchases.append(purchase)
         self.__save()
 
 
@@ -119,7 +140,7 @@ class Store:
         if len(phone) != 11:
             raise ValueError("phone number must have 11 characters")
 
-        new_seller = [self.__name, first_name, last_name, password, location, phone, email]
+        new_seller = [self, first_name, last_name, password, location, phone, email]
         self.__load_locals()
         self.__pending_sellers.append(new_seller)
         self.__save()
@@ -153,8 +174,8 @@ class Store:
 
 
     # to make new users
-    def user_sign_up(self, first_name, last_name, password, location, phone, email):
-        self.__load
+    def user_sign_up(self, first_name, last_name, location, password, phone, email):
+        self.__load()
 
         # value constraints:
         for _ in (first_name, last_name, password, phone, email):
@@ -174,15 +195,15 @@ class Store:
         if len(phone) != 11:
             raise ValueError("phone number must have 11 characters")
 
-        User(self, first_name, last_name, password, location, phone, email)
+        User(self, first_name, last_name, location, password, phone, email)
 
 
     # for users' log-in
-    def user_sign_in(self, email, password):
+    def user_sign_in(self, phone_number, password):
         self.__load()
         for user in self.__users:
-            if user.email == email and user.password == password:
-                return True
+            if user.phone_number == phone_number and user.password == password:
+                return user
         return False
 
 
@@ -212,6 +233,7 @@ class Store:
             raise ValueError("seller number must be an integer")
 
         Seller(*self.__pending_sellers[seller_number])
+        del self.__pending_sellers[seller_number]
 
     
     # for store owner to allow new products
@@ -222,6 +244,17 @@ class Store:
             raise ValueError("product number must be an integer")
         
         Product(*self.__pending_products[product_number])
+        del self.__pending_products[product_number]
+
+
+    # for sellers to get their sells
+    def get_sells(self, seller_id):
+        self.__load_locals()
+        sells = []
+        for purchase in self.__purchases:
+            if purchase[3] == seller_id:
+                sells.append(purchase)
+        return sells
 
 
     # to generate a promo code
@@ -263,11 +296,10 @@ class Store:
         sum_profits = 0
         start_date = datetime.datetime(*[int(_) for _ in start_date.split("-")])
         end_date = datetime.datetime(*[int(_) for _ in end_date.split("-")])
-        for file in os.listdir(f"./DATABASE/{self.__name}/Purchases"):
-            file_date = datetime.datetime(*[int(_) for _ in file[:10].split("-")])
+        for purchase in self.__purchases:
+            file_date = datetime.datetime(*purchase[0].split("-"))
             if start_date < file_date < end_date:
-                with open(f"./DATABASE/{self.__name}/Purchases/{file}", "rt") as file_info:
-                    sum_profits += 0.2 * list(file_info)[1]
+                sum_profits += 0.2 * purchase[-1] * purchase[-2]
         return sum_profits
 
 
@@ -324,7 +356,7 @@ class Store:
     @property
     def sellers(self):
         self.__load()
-        return self.__sellers
+        return self.__sellers.sort(key=lambda _ : _.rating, reverse=True)
 
 
     @property
@@ -349,4 +381,10 @@ class Store:
     def promo_codes(self):
         self.__load_locals()
         return list(self.__promo_codes.keys())
+
+
+    @property
+    def purchases(self):
+        self.__load_locals()
+        return self.__purchases
 

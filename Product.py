@@ -3,8 +3,8 @@ import pickle
 
 class Product:
 
-    def __init__(self, store, name, explanation, image):
-        self.__store = store
+    def __init__(self, store_name, name, explanation, image):
+        self.__store_name = store_name
         self.__name = name
         self.__explanation = explanation
         self.__product_id = self.__gen_product_id()
@@ -13,7 +13,7 @@ class Product:
         self.__image = image
         self.__save()
 
-        with open(f"./DATABASE/{self.__store}/Products/ProductsList.txt", "at") as products:
+        with open(f"./DATABASE/{self.__store_name}/Products/ProductsList.txt", "at") as products:
             products.write("\n" + self.__product_id)
 
 
@@ -21,17 +21,17 @@ class Product:
 
     # to save changes to database
     def __save(self):
-        with open(f"./DATABASE/{self.__store}/Products/{self.__product_id}.dat", "wb") as dat_file:
+        with open(f"./DATABASE/{self.__store_name}/Products/{self.__product_id}.dat", "wb") as dat_file:
             pickle.dump(self, dat_file)
 
 
     # to generate unique product id
     def __gen_product_id(self):
         try:
-            with open(f"./DATABASE/{self.__store}/Products/ProductsList.txt", "rt") as products:
+            with open(f"./DATABASE/{self.__store_name}/Products/ProductsList.txt", "rt") as products:
                 for line in products:
                     pass
-                last_product_id = int(line[2:])
+                last_product_id = int(line[2:].strip('\n'))
         except UnboundLocalError:
             last_product_id = 0  # in case there are no products yet
         
@@ -51,28 +51,27 @@ class Product:
 
     # to decrease stock after a purchase
     def decrease_stock(self, seller, number):
-        if number > self.__sellers_prices_stock[seller][1]:
-            raise ValueError("there are not enough products in stock")
-
-        self.__sellers_prices_stock[seller][1] -= number
-        self.__save()
+        for product_seller in list(self.__sellers_prices_stock.keys()):
+            if product_seller.seller_id == seller.seller_id:
+                if number > self.__sellers_prices_stock[product_seller][1]:
+                    raise ValueError("there are not enough products in stock")
+                self.__sellers_prices_stock[product_seller][1] -= number
+                self.__save()
+                break
 
 
     # to add new comments
     def add_comment(self, sender, comment):
-        if not isinstance(comment, str):
-            raise ValueError("comment must be a string")
-        
         self.__comments.append([sender, comment])
         self.__save()
 
 
     # to get price of a particular seller
     def price(self, seller):
-        if not (seller in self.sellers):
-            raise ValueError("no such seller")
-
-        return self.__sellers_prices_stock[seller][0]
+        for product_seller in list(self.__sellers_prices_stock.keys()):
+            if product_seller.seller_id == seller.seller_id:
+                return self.__sellers_prices_stock[product_seller][0]
+        raise ValueError("no such seller")
 
 
     # -------------- Setters and Getters --------------

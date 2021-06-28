@@ -15,7 +15,7 @@ class MainWidget(QWidget):
         # Stores Section
         stores_layout = QVBoxLayout()
         stores_label = QLabel('''<h1><i><p style="font-family:Fantasy;color:rgb(59,149,113)">
-                                 <br>Stores List:</p></i></h1>''')
+                                 <br>Stores List:<br></p></i></h1>''')
         stores_layout.addWidget(stores_label)
         new_store_button = QPushButton()
         new_store_button.setStyleSheet("background-color:rgb(32,154,26);font: 19px;")
@@ -27,8 +27,8 @@ class MainWidget(QWidget):
                     continue
                 store_button = QPushButton()
                 store_button.setStyleSheet("background-color:rgb(32,154,26);font:19px;")
-                store_button.setText(store[2:])
-                store_button.clicked.connect(lambda : self.__goto_store(store[2:]))
+                store_button.setText(store.strip('\n'))
+                store_button.clicked.connect(lambda : self.__goto_store(store.strip('\n')))
                 stores_layout.addWidget(store_button)
             stores_layout.addWidget(new_store_button)
             stores_spacer = QWidget()
@@ -38,7 +38,7 @@ class MainWidget(QWidget):
         # Operator Section
         operator_layout = QVBoxLayout()
         operator_label = QLabel('''<h1><i><p style="font-family:Fantasy;color:rgb(59,149,113)">
-                                 <br>Operator Log-in</p></i></h1>''')
+                                 <br>Operator Log-in<br></p></i></h1>''')
         operator_label.setAlignment(Qt.AlignCenter)
         operator_layout.addWidget(operator_label)
         operator_login_button = QPushButton()
@@ -46,10 +46,12 @@ class MainWidget(QWidget):
         operator_login_button.setText("operator login")
         operator_login_button.clicked.connect(lambda : self.__operator_login(operator_name.text(), operator_pass.text()))
         operator_name = QLineEdit()
+        operator_name.setPlaceholderText("Operator Username")
         operator_name.setStyleSheet("background-color:white;")
         operator_name.returnPressed.connect(operator_login_button.click)
         operator_layout.addWidget(operator_name)
         operator_pass = QLineEdit()
+        operator_pass.setPlaceholderText("Operator Password")
         operator_pass.setStyleSheet("background-color:white;")
         operator_pass.returnPressed.connect(operator_login_button.click)
         operator_pass.setEchoMode(QLineEdit.Password)
@@ -76,8 +78,8 @@ class MainWidget(QWidget):
 
     # Methods
     def __new_store(self):
-        page = NewStoreUi.MainWidget(self.parent)
-        self.parent.goto_page(page, [NewStoreUi.MainWidget, self.parent])
+        page = NewStoreUi.MainWidget()
+        self.parent.goto_page(page, [NewStoreUi.MainWidget])
     
 
     def __goto_store(self, store):
@@ -89,7 +91,8 @@ class MainWidget(QWidget):
             for store in stores:
                 if store == "\n":
                     continue
-                with open(f"./DATABASE/{store[2:]}.dat", "rb") as store_file:
+                store = store.strip('\n')
+                with open(f"./DATABASE/{store}.dat", "rb") as store_file:
                     saved = pickle.load(store_file)
                     if name == saved.owner_name:
                         if password == saved.owner_password:
@@ -100,5 +103,4 @@ class MainWidget(QWidget):
                         break
             else:
                 self.operator_login_status.setText('<h4 style="color:red;"><br>wrong credentials</h4>')
-
 
