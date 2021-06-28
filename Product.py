@@ -68,7 +68,7 @@ class Product:
 
     # to get price of a particular seller
     def price(self, seller):
-        for product_seller in list(self.__sellers_prices_stock.keys()):
+        for product_seller in self.__sellers_prices_stock.keys():
             if product_seller.seller_id == seller.seller_id:
                 return self.__sellers_prices_stock[product_seller][0]
         raise ValueError("no such seller")
@@ -76,7 +76,7 @@ class Product:
 
     # to get stock of a particular seller
     def stock(self, seller):
-        for product_seller in list(self.__sellers_prices_stock.keys()):
+        for product_seller in self.__sellers_prices_stock.keys():
             if product_seller.seller_id == seller.seller_id:
                 return self.__sellers_prices_stock[product_seller][1]
         raise ValueError("no such seller")

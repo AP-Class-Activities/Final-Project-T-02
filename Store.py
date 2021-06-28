@@ -252,7 +252,7 @@ class Store:
         self.__load_locals()
         sells = []
         for purchase in self.__purchases:
-            if purchase[3] == seller_id:
+            if purchase[-1] == seller_id:
                 sells.append(purchase)
         return sells
 
@@ -299,7 +299,7 @@ class Store:
         for purchase in self.__purchases:
             file_date = datetime.datetime(*purchase[0].split("-"))
             if start_date < file_date < end_date:
-                sum_profits += 0.2 * purchase[-1] * purchase[-2]
+                sum_profits += 0.2 * purchase[-3] * purchase[-2]
         return sum_profits
 
 
