@@ -74,6 +74,14 @@ class Product:
         raise ValueError("no such seller")
 
 
+    # to get stock of a particular seller
+    def stock(self, seller):
+        for product_seller in list(self.__sellers_prices_stock.keys()):
+            if product_seller.seller_id == seller.seller_id:
+                return self.__sellers_prices_stock[product_seller][1]
+        raise ValueError("no such seller")
+
+
     # -------------- Setters and Getters --------------
 
     @property
