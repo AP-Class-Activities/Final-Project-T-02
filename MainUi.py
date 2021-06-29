@@ -55,6 +55,10 @@ class MainWindow(QMainWindow):
 
 
     # Methods
+    def change_toolbar_title(self, title):
+        self.toolbar_title.setText(f'<b><p style="color:green;">{title}</p></b>')
+
+
     def __go_back(self):
         current_index = self.layout.currentIndex()
         if current_index > 0:
@@ -62,6 +66,8 @@ class MainWindow(QMainWindow):
             self.layout.removeWidget(self.layout.widget(current_index))
             self.layout.insertWidget(current_index-1, page)
             self.layout.setCurrentIndex(current_index-1)
+            if self.layout.currentIndex() == 0:
+                self.change_toolbar_title("Welcome to Market")
 
 
     def __go_home(self):

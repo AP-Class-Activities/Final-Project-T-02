@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout,
                              QFormLayout, QFrame, QLineEdit, QSizePolicy,
-                             QPushButton)
+                             QPushButton, QMessageBox)
 from PyQt5.QtCore import Qt
 from Store import Store
 
@@ -66,8 +66,17 @@ class MainWidget(QWidget):
     
 
     def create_store(self, name, owner_name, owner_password):
-        Store(name, owner_name, owner_password)
-        self.name.setText("")
-        self.owner_name.setText("")
-        self.owner_password.setText("")
+        try:
+            Store(name, owner_name, owner_password)
+        except Exception as e:
+            error_message = QMessageBox(self)
+            error_message.setIcon(QMessageBox.Critical)
+            error_message.setWindowTitle("ERROR")
+            error_message.setText(str(e))
+            error_message.setStyleSheet("background-color:white")
+            error_message.exec()
+        finally:
+            self.name.setText("")
+            self.owner_name.setText("")
+            self.owner_password.setText("")
 

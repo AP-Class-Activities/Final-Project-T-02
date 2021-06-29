@@ -48,6 +48,7 @@ class MainWidget(QWidget):
         super().__init__()
         self.parent = parent
         self.user = user
+        self.parent.change_toolbar_title(store.name)
 
         bar_layout = QHBoxLayout()
         cart_pic = QPixmap("./DATABASE/Icons/cart.png")
