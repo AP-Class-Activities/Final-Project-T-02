@@ -238,13 +238,14 @@ class Store:
     
     # for store owner to allow new products
     def confirm_new_product(self, product_number):
-
+        self.__load_locals()
         # value constraint:
         if not isinstance(product_number, int):
             raise ValueError("product number must be an integer")
         
         Product(*self.__pending_products[product_number])
         del self.__pending_products[product_number]
+        self.__save()
 
 
     # for sellers to get their sells
