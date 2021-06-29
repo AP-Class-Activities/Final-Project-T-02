@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QLabel, QWidget, QFrame, QVBoxLayout,
                              QHBoxLayout, QPushButton, QLineEdit, QSizePolicy)
 from PyQt5.QtCore import Qt
-import NewStoreUi
+import NewStoreUi, StoreUi
 import pickle
 import time
 
@@ -83,7 +83,10 @@ class MainWidget(QWidget):
     
 
     def __goto_store(self, store):
-        pass
+        with open(f"./DATABASE/{store}.dat", "rb") as store_file:
+            saved = pickle.load(store_file)
+        page = StoreUi.MainWidget(self.parent, saved)
+        self.parent.goto_page(page, [StoreUi.MainWidget, self.parent, saved])
 
 
     def __operator_login(self, name, password):
