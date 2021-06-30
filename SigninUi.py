@@ -28,7 +28,7 @@ class user_signin(QWidget):
 
         label4 = QLabel('شماره تماس')
         self.lineEdit_phonenumber = QLineEdit
-        self.lineEdit_phonenumber.setPlaceholderText('لطفا نام شماره تلفن را وارد کنید')
+        self.lineEdit_phonenumber.setPlaceholderText('لطفا شماره تلفن را وارد کنید')
         layout.addWidget(label4, 2, 0)
         layout.addWidget(self.lineEdit_city, 2, 1)
 
