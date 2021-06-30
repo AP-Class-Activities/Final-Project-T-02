@@ -1,14 +1,17 @@
+
 from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
 
 import sys
-from User import User
+from Seller import Seller
+import StoreUi
 
 
 
 class user_signin(QWidget):
 
-    def __init__(self, store):
+    def __init__(self, parent, store):
         self.store = store
+        self.parent = parent
         self.setWindowTitle('ثبت نام کاربران')
         self.resize(500, 120)
 
@@ -60,14 +63,16 @@ class user_signin(QWidget):
 
         self.setLayout(layout)
 
-    def check_phonenumber(self):
-        message = QMessageBox
-
-        if self.lineEdit_phonenumber.text() == User.phone_number:
-            message.setText('این شماره تلفن قبلا استفاده شده است')
-            message.exec_()
-
-
+    def check(self):
+        try:
+            User(self.store, self.lineEdit_name.text(), self.lineEdit_lastname.text(),self.lineEdit_password.text(), self.lineEdit_phonenumber.text(), self.lineEdit_city.text())
+        except Exception as e:
+            message = QMessageBox(self)
+            message.setIcon(QMessageBox.critical())
+            message.setWindowTitle('این شماره تلفن قبلا ثبت شده است')
+            message.setText(str(e))
+            message.setStyleSheet("background_color:white")
+            message.exec
 
 
 
