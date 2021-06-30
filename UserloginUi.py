@@ -37,15 +37,18 @@ class login(QWidget):
         self.setLayout(layout)
 
     def check_password(self):
-      message = QMessageBox()
+        message = QMessageBox()
 
-      if self.lineEdit_password.text() == User.password and self.lineEdit_username.text() == User.phone_number:
-        message.setText('خوش آمدید')
-        message.exec_()
+        if self.lineEdit_password.text() == User.password and self.lineEdit_username.text() == User.phone_number:
+            message.setText('خوش آمدید')
+            message.exec_()
 
-      else:
-        message.setText('نام کاربری یا رمز عبور اشتباه است')
-        message.exec_()
+        else:
+            message.setText('نام کاربری یا رمز عبور اشتباه است')
+            message.exec_()
+
+
+
 
 
 
