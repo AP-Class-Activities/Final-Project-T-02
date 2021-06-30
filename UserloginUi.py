@@ -1,16 +1,19 @@
 from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
 
 import sys
+from User import User
+
 
 
 class login(QWidget):
 
-    def __init__(self):
+    def __init__(self, store):
+        self.store = store
         self.setWindowTitle('ورود کاربران')
         self.resize(500, 120)
 
 
-        layout = QGridlLayout()
+        layout = QGridLayout()
 
 
 
@@ -28,27 +31,22 @@ class login(QWidget):
         layout.addWidget(self.lineEdit_password, 1, 1)
 
         button_login = QPushButton('جهت ادامه کلیک کنید')
+        button_login.clicked.connect(self.check)
+        layout.addWidget(2, 0, button_login)
 
         self.setLayout(layout)
 
     def check_password(self):
       message = QMessageBox()
 
-      if self.lineEdit_password.text() == '' and self.lineEdit_username.text() == '':
-        message.setText('')
+      if self.lineEdit_password.text() == User.password and self.lineEdit_username.text() == User.phone_number:
+        message.setText('خوش آمدید')
         message.exec_()
 
       else:
         message.setText('نام کاربری یا رمز عبور اشتباه است')
         message.exec_()
 
-
-
-
-app = QApplication(sys.argv)
-form = login(QWidget)
-form.show()
-sys.exit(app.exec_())
 
 
 
