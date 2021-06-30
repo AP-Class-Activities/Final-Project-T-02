@@ -184,7 +184,7 @@ class Store:
         for user in self.__users:
             if email == user.email:
                 raise ValueError("email already used")
-            if phone == user.phone:
+            if phone == user.phone_number:
                 raise ValueError("phone number already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
@@ -234,6 +234,7 @@ class Store:
 
         Seller(*self.__pending_sellers[seller_number])
         del self.__pending_sellers[seller_number]
+        self.__save()
 
     
     # for store owner to allow new products
@@ -295,11 +296,11 @@ class Store:
     # to get profits within desired period
     def profit(self, start_date, end_date):
         sum_profits = 0
-        start_date = datetime.datetime(*[int(_) for _ in start_date.split("-")])
-        end_date = datetime.datetime(*[int(_) for _ in end_date.split("-")])
-        for purchase in self.__purchases:
-            file_date = datetime.datetime(*purchase[0].split("-"))
-            if start_date < file_date < end_date:
+        start_date = datetime.date(*[int(_) for _ in start_date.split("-")])
+        end_date = datetime.date(*[int(_) for _ in end_date.split("-")])
+        for purchase in self.__purchases[0]:
+            file_date = purchase[0]
+            if start_date <= file_date <= end_date:
                 sum_profits += 0.2 * purchase[-3] * purchase[-2]
         return sum_profits
 
@@ -357,7 +358,8 @@ class Store:
     @property
     def sellers(self):
         self.__load()
-        return self.__sellers.sort(key=lambda _ : _.rating, reverse=True)
+        self.__sellers.sort(key=lambda _ : 0 if _.rating=="N/A" else _.rating, reverse=True)
+        return self.__sellers
 
 
     @property

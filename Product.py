@@ -131,7 +131,10 @@ class Product:
 
     @property
     def least_price(self):
-        return min([i[0] for i in self.__sellers_prices_stock.values()])
+        stocks = [i[0] for i in self.__sellers_prices_stock.values()]
+        if stocks:
+            return min(stocks)
+        return 0
 
 
     @property
