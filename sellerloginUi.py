@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLa
 
 import sys
 from Seller import Seller
+import StoreUi
 
 
 
@@ -37,16 +38,19 @@ class seller_login(QWidget):
 
         self.setLayout(layout)
 
-    def check_password(self):
-      message = QMessageBox()
+    def check(self):
+        try:
+            user = self.store.Seller_sign_in(self.lineEdit_phonenumber.text(), self.lineEdit_password.text())
+            Store_page = StoreUi.MainWidget(self.parent, self.store, Seller)
+            self.parent.goto_page(Store_page, [self.parent, self.store, Seller])
 
-      if self.lineEdit_password.text() == Seller.password and self.lineEdit_username.text() == Seller.phone:
-        message.setText('خوش آمدید')
-        message.exec_()
-
-      else:
-        message.setText('نام کاربری یا رمز عبور اشتباه است')
-        message.exec_()
+        except Exception as e:
+            message = QMessageBox(self)
+            message.setIcon(QMessageBox.critical())
+            message.setWindowTitle('نام کاربری یا رمز عبور اشتباه است')
+            message.setText(str(e))
+            message.setStyleSheet("background_color:white")
+            message.exec
 
 
 
