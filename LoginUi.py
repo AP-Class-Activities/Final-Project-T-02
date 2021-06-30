@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
 
 import sys
 
@@ -10,19 +10,19 @@ class login(QWidget):
         self.resize(500, 120)
 
 
-        layout = QGridlayout()
+        layout = QGridlLayout()
 
 
 
         label_name = QLabel('نام کاربری')
-        self.lineEdit_username = QLineEdit
+        self.lineEdit_username = QLineEdit()
         self.lineEdit_username.setPlaceholderText('لطفا نام کاربری خود را وارد کنید')
         layout.addWidget(label_name, 0, 0)
         layout.addWidget(self.lineEdit_username, 0, 1)
 
 
         label_password = QLabel('رمز عبور')
-        self.lineEdit_password = QLineEdit
+        self.lineEdit_password = QLineEdit()
         self.lineEdit_password.setPlaceholderText('لطفا رمز عبور خود را وارد کنید')
         layout.addWidget(label_password, 1, 0)
         layout.addWidget(self.lineEdit_password, 1, 1)
@@ -32,7 +32,7 @@ class login(QWidget):
         self.setLayout(layout)
 
     def check_password(self):
-      message = QMessageBox
+      message = QMessageBox()
 
       if self.lineEdit_password.text() == '' and self.lineEdit_username.text() == '':
         message.setText('')
