@@ -13,6 +13,7 @@ class login(QWidget):
         layout = QGridlayout()
 
 
+
         label_name = QLabel('نام کاربری')
         self.lineEdit_username = QLineEdit
         self.lineEdit_username.setPlaceholderText('لطفا نام کاربری خود را وارد کنید')
