@@ -2,13 +2,15 @@ from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLa
 
 import sys
 from User import User
+import StoreUi
 
 
 
 class login(QWidget):
 
-    def __init__(self, store):
+    def __init__(self, parent, store):
         self.store = store
+        self.parent = parent
         self.setWindowTitle('ورود کاربران')
         self.resize(500, 120)
 
@@ -36,17 +38,19 @@ class login(QWidget):
 
         self.setLayout(layout)
 
-    def check_password(self):
-        message = QMessageBox()
+    def check(self):
+        try:
+            user = self.store.user_sign_in(self.lineEdit_phonenumber.text(), self.lineEdit_password.text())
+            Store_page = StoreUi.MainWidget(self.parent, self.store, user)
+            self.parent.goto_page(Store_page, [self.parent, self.store, user])
 
-        if self.lineEdit_password.text() == User.password and self.lineEdit_username.text() == User.phone_number:
-            message.setText('خوش آمدید')
-            message.exec_()
-
-        else:
-            message.setText('نام کاربری یا رمز عبور اشتباه است')
-            message.exec_()
-
+        except Exception as e:
+            message = QMessageBox(self)
+            message.setIcon(QMessageBox.critical())
+            message.setWindowTitle('نام کاربری یا رمز عبور اشتباه است')
+            message.setText(str(e))
+            message.setStyleSheet("background_color:white")
+            message.exec
 
 
 
