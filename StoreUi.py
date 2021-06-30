@@ -2,6 +2,10 @@ from PyQt5.QtWidgets import (QPushButton, QWidget, QGridLayout, QLabel, QVBoxLay
                              QHBoxLayout, QScrollArea, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
+from sellersigninUi import selelr_signin
+from sellerloginUi import seller_login
+from UsersigninUi import user_signin
+from UserloginUi import login
 
 
 class ProductWidget(QWidget):
@@ -47,6 +51,7 @@ class MainWidget(QWidget):
     def __init__(self, parent, store, user=None):
         super().__init__()
         self.parent = parent
+        self.store = store
         self.user = user
         self.parent.change_toolbar_title(store.name)
 
@@ -66,13 +71,25 @@ class MainWidget(QWidget):
             quit_button = QPushButton("Log Out of Account")
             bar_layout.addWidget(quit_button, stretch=3)
         else:
-            sign_in_button = QPushButton("\nSign-in\n")
-            sign_in_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
-            bar_layout.addWidget(sign_in_button, stretch=1)
+            seller_sign_in_button = QPushButton("Sellers\nSign-in")
+            seller_sign_in_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
+            bar_layout.addWidget(seller_sign_in_button, stretch=1)
+            seller_sign_in_button.clicked.connect(self.seller_sign_in)
 
-            sign_up_button = QPushButton("\nSign-up\n")
-            sign_up_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
-            bar_layout.addWidget(sign_up_button, stretch=1)
+            seller_sign_up_button = QPushButton("Sellers\nSign-up")
+            seller_sign_up_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
+            bar_layout.addWidget(seller_sign_up_button, stretch=1)
+            seller_sign_up_button.clicked.connect(self.seller_sign_up)
+
+            user_sign_in_button = QPushButton("Users\nSign-in")
+            user_sign_in_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
+            bar_layout.addWidget(user_sign_in_button, stretch=1)
+            user_sign_in_button.clicked.connect(self.user_sign_in)
+
+            user_sign_up_button = QPushButton("Users\nSign-up")
+            user_sign_up_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
+            bar_layout.addWidget(user_sign_up_button, stretch=1)
+            user_sign_up_button.clicked.connect(self.user_sign_up)
 
 
         products_widget = QWidget()
@@ -100,4 +117,24 @@ class MainWidget(QWidget):
             error_message.exec()
         else:
             pass
+
+
+    def seller_sign_in(self):
+        page = seller_login(self.parent, self.store)
+        self.parent.goto_page(page, [seller_login, [self.parent, self.store]])
+
+
+    def seller_sign_up(self):
+        page = selelr_signin(self.parent, self.store)
+        self.parent.goto_page(page, [selelr_signin, self.parent, self.store])
+    
+
+    def user_sign_in(self):
+        page = login(self.parent, self.store)
+        self.parent.goto_page(page, [login, self.parent, self.store])
+
+    
+    def user_sign_up(self):
+        page = user_signin(self.parent, self.store)
+        self.parent.goto_page(page, [user_signin, self.parent, self.store])
 

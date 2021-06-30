@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QLabel, QWidget, QFrame, QVBoxLayout,
                              QHBoxLayout, QPushButton, QLineEdit, QSizePolicy)
 from PyQt5.QtCore import Qt
-import NewStoreUi, StoreUi
+import NewStoreUi, StoreUi, OperatorPanelUi
 import pickle
 import time
 
@@ -101,6 +101,8 @@ class MainWidget(QWidget):
                         if password == saved.owner_password:
                             self.operator_login_status.setText('<h4 style="color:green;"><br>success</h4>')
                             time.sleep(1)
+                            page = OperatorPanelUi.MainWidget(saved)
+                            self.parent.goto_page(page, [OperatorPanelUi.MainWidget, saved])
                             break
                         self.operator_login_status.setText('<h4 style="color:red;"><br>worong password</h4>')
                         break

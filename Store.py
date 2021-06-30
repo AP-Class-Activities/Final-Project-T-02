@@ -133,6 +133,7 @@ class Store:
                 raise ValueError("phone number already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
+        location = eval(location)
         if not (isinstance(location, tuple) and len(location) == 2):
             raise ValueError("location must be a tuple of two floating points")
         if not (isinstance(location[0], float) and isinstance(location[1], float)):
@@ -188,6 +189,7 @@ class Store:
                 raise ValueError("phone number already used")
         if len(password) != 8:
             raise ValueError("password must be 8 characters")
+        location = eval(location)
         if not (isinstance(location, tuple) and len(location) == 2):
             raise ValueError("location must be a tuple of two floating points")
         if not (isinstance(location[0], float) and isinstance(location[1], float)):
@@ -288,7 +290,7 @@ class Store:
 
         promo_code = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         self.__load_locals()
-        self.__promo_codes[promo_code] = (percentage, expiration, products, users)
+        self.__promo_codes[promo_code] = (datetime.date.today(), percentage, expiration, products, users)
         self.__save()
         return promo_code
 
