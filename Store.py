@@ -385,7 +385,7 @@ class Store:
     @property
     def promo_codes(self):
         self.__load_locals()
-        return list(self.__promo_codes.keys())
+        return self.__promo_codes
 
 
     @property

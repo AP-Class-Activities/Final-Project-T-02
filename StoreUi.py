@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QPushButton, QWidget, QGridLayout, QLabel, QVBoxLay
                              QHBoxLayout, QScrollArea, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
-import ProductUi
+import ProductUi, CartUi
 from sellersigninUi import selelr_signin
 from sellerloginUi import seller_login
 from UsersigninUi import user_signin
@@ -122,7 +122,8 @@ class MainWidget(QWidget):
             error_message.setStyleSheet("background-color:white")
             error_message.exec()
         else:
-            pass
+            page = CartUi.MainWidget(self.store, self.user)
+            self.parent.goto_page(page, [CartUi.MainWidget, self.store, self.user])
 
 
     def quit(self):

@@ -112,7 +112,7 @@ class MainWidget(QScrollArea):
 
 
     def add_to_cart(self):
-        self.user.add_product_to_shopping_cart(self.product, self.product_sellers[self.sellers.currentIndex])
+        self.user.add_product_to_shopping_cart(self.product, self.product_sellers[self.sellers.currentIndex()], self.number.value())
 
 
     def fill_comments(self):

@@ -10,8 +10,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Market")
-        self.resize(837, 600)
-
+        self.showMaximized()
 
         # Toolbar
         toolbar = QToolBar()
