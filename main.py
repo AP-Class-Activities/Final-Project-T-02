@@ -39,9 +39,9 @@ if __name__ == "__main__":
 # store.seller_sign_up("habib", "merban", "12345678", "(4.1,3.1)", "05688645891", "elsedm@gmail.com")
 # store.confirm_new_seller(0)
 # seller = store.seller_sign_in("01234567891", "12345678")
-# for i in range(10):
+# for i in range(18):
 #    seller.create_new_product(f"Sample Product {i}", f"This is an explanation fo sample product number {i}. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.")
-# for i in range(10):
+# for i in range(18):
 #    store.confirm_new_product(0)
 # store.user_sign_up("morteza", "zia", "(3.2, 2.5)", "12345678", "06813543210", "jtmaifddfsl@yahoo.orga")
 # store.user_sign_up("saman", "yekta", "(3.2, 2.5)", "12345678", "04876543210", "gsdfmail@yahoo.orga")

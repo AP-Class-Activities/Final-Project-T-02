@@ -252,7 +252,7 @@ class MainWidget(QScrollArea):
                 code = self.operator.get_promo_code(percentage, int(expiration))
                 self.promocode_label.setText(code)
             else:
-                code = self.operator.get_promo_code(percentage)
+                code = self.operator.gen_promo_code(percentage)
                 self.promocode_label.setText(code)
         except Exception as e:
             error_message = QMessageBox(self)

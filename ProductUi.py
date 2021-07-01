@@ -22,7 +22,7 @@ class MainWidget(QScrollArea):
         explanation.setAlignment(Qt.AlignCenter)
         explanation.setWordWrap(True)
 
-        self.price = QLabel(f'<strong style="font-family:Fantasy;color:rgb(59,149,113)"><i>${str(product.least_price)}$</i></strong>')
+        self.price = QLabel(f'<strong style="font-size:24;font-family:Fantasy;color:rgb(59,149,113)"><i>${str(product.least_price)}$</i></strong>')
         self.price.setAlignment(Qt.AlignCenter)
 
         self.sellers = QComboBox()

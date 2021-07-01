@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         self.toolbar_title = QLabel('<b><p style="color:green;">Welcome to Market</p></b>')
 
         home_action = QAction(QIcon("./DATABASE/Icons/Home.png"), "Home Page", self)
-        home_action.triggered.connect(self.__go_home)
+        home_action.triggered.connect(self.go_home)
 
         toolbar.addAction(back_action)
         toolbar.addWidget(spacer)
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
                 self.change_toolbar_title("Welcome to Market")
 
 
-    def __go_home(self):
+    def go_home(self):
         while self.layout.currentIndex() > 0:
             self.__go_back()
 

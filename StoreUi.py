@@ -70,10 +70,12 @@ class MainWidget(QWidget):
         bar_layout.addWidget(spacer, stretch=9)
 
         if user:
-            welcome_label = QLabel(f"Welcome {user.name}!")
+            welcome_label = QLabel(f'<b><p style="color:green;">Welcome {user.name}!</p><b>')
             bar_layout.addWidget(welcome_label, stretch=7)
             quit_button = QPushButton("Log Out of Account")
+            quit_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
             bar_layout.addWidget(quit_button, stretch=3)
+            quit_button.clicked.connect(self.quit)
         else:
             seller_sign_in_button = QPushButton("Sellers\nSign-in")
             seller_sign_in_button.setStyleSheet("background-color:rgb(32,154,26);font:17px;")
@@ -121,6 +123,10 @@ class MainWidget(QWidget):
             error_message.exec()
         else:
             pass
+
+
+    def quit(self):
+        self.parent.go_home()
 
 
     def seller_sign_in(self):
