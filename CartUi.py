@@ -53,6 +53,7 @@ class MainWidget(QScrollArea):
         self.user = user
 
         balance_layout = QVBoxLayout()
+        balance_layout.addSpacing(10)
         balance_title = QLabel('<h2 style="font-family:Fantasy;color:rgb(59,149,113)"><i>Balance</i></h2>')
         self.balance = QLabel(f'<h2 style="font-family:Fantasy">Your Current Balance is: {user.balance}</h3>')
         self.increase_balance_amount = QLineEdit()
@@ -61,8 +62,10 @@ class MainWidget(QScrollArea):
         balance_button.setStyleSheet("background-color:rgb(32,154,26);font:18px;")
         balance_button.clicked.connect(self.increase_balance)
         self.balance_result = QLabel("")
+        self.balance_result.setAlignment(Qt.AlignCenter)
         balance_layout.addWidget(balance_title)
         balance_layout.addWidget(self.balance)
+        balance_layout.addWidget(self.increase_balance_amount)
         balance_layout.addWidget(balance_button)
         balance_layout.addWidget(self.balance_result)
 
@@ -71,6 +74,7 @@ class MainWidget(QScrollArea):
         self.bargain = 0
 
         products_layout = QVBoxLayout()
+        products_layout.addSpacing(10)
         for product, s_n in user.shopping_cart.items():
             product_widget = ProductWidget(product, product.price(s_n[0]), s_n[1], user)
             products_layout.addWidget(product_widget)
@@ -80,6 +84,7 @@ class MainWidget(QScrollArea):
         products_layout.addWidget(self.total_label)
 
         promocode_layout = QVBoxLayout()
+        promocode_layout.addSpacing(10)
         promocode_title = QLabel('<h2 style="font-family:Fantasy;color:rgb(59,149,113)"><i>Use a Promo Code</i></h2>')
         promocode_title.setAlignment(Qt.AlignCenter)
         self.promocode = QLineEdit()
@@ -88,6 +93,7 @@ class MainWidget(QScrollArea):
         promocode_button.setStyleSheet("background-color:rgb(32,154,26);font:18px;")
         promocode_button.clicked.connect(self.check_promocode)
         self.promocode_result = QLabel("")
+        self.promocode_result.setAlignment(Qt.AlignCenter)
         promocode_layout.addWidget(promocode_title)
         promocode_layout.addWidget(self.promocode)
         promocode_layout.addWidget(promocode_button)
@@ -103,6 +109,7 @@ class MainWidget(QScrollArea):
         products_layout.addWidget(self.pay_result)
 
         main_layout = QHBoxLayout()
+        main_layout.setSpacing(60)
         main_layout.addLayout(promocode_layout)
         main_layout.addLayout(products_layout)
         main_layout.addLayout(balance_layout)
