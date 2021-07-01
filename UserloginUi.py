@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
 
 import sys
-from User import User
 import StoreUi
 
 
@@ -9,48 +8,48 @@ import StoreUi
 class login(QWidget):
 
     def __init__(self, parent, store):
+        super().__init__()
         self.store = store
         self.parent = parent
-        self.setWindowTitle('ورود کاربران')
-        self.resize(500, 120)
 
 
         layout = QGridLayout()
 
 
 
-        label_name = QLabel('نام کاربری')
-        self.lineEdit_username = QLineEdit()
-        self.lineEdit_username.setPlaceholderText('لطفا نام کاربری خود را وارد کنید')
-        layout.addWidget(label_name, 0, 0)
-        layout.addWidget(self.lineEdit_username, 0, 1)
+        label_phone = QLabel('Phone Number')
+        self.lineEdit_phone = QLineEdit()
+        self.lineEdit_phone.setPlaceholderText('please enter your phone number')
+        layout.addWidget(label_phone, 0, 0)
+        layout.addWidget(self.lineEdit_phone, 0, 1)
 
 
-        label_password = QLabel('رمز عبور')
+        label_password = QLabel('Password')
         self.lineEdit_password = QLineEdit()
-        self.lineEdit_password.setPlaceholderText('لطفا رمز عبور خود را وارد کنید')
+        self.lineEdit_password.setPlaceholderText('please enter your password')
+        self.lineEdit_password.setEchoMode(QLineEdit.Password)
         layout.addWidget(label_password, 1, 0)
         layout.addWidget(self.lineEdit_password, 1, 1)
 
-        button_login = QPushButton('جهت ادامه کلیک کنید')
+        button_login = QPushButton('Click here to Proceed')
         button_login.clicked.connect(self.check)
-        layout.addWidget(2, 0, button_login)
+        layout.addWidget(button_login, 2, 0)
 
         self.setLayout(layout)
 
     def check(self):
-        try:
-            user = self.store.user_sign_in(self.lineEdit_phonenumber.text(), self.lineEdit_password.text())
+        user = self.store.user_sign_in(self.lineEdit_phone.text(), self.lineEdit_password.text())
+        if user:
             Store_page = StoreUi.MainWidget(self.parent, self.store, user)
-            self.parent.goto_page(Store_page, [self.parent, self.store, user])
+            self.parent.goto_page(Store_page, [StoreUi.MainWidget, self.parent, self.store, user])
 
-        except Exception as e:
+        else:
             message = QMessageBox(self)
-            message.setIcon(QMessageBox.critical())
-            message.setWindowTitle('نام کاربری یا رمز عبور اشتباه است')
-            message.setText(str(e))
-            message.setStyleSheet("background_color:white")
-            message.exec
+            message.setIcon(QMessageBox.Critical)
+            message.setWindowTitle('Error')
+            message.setText('Wrong Credentials')
+            message.setStyleSheet('background-color:white')
+            message.exec()
 
 
 

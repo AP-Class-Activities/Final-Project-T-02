@@ -1,84 +1,88 @@
 from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QPushButton, QLabel, QVBoxLayout, QLineEdit, QMessageBox
 
 import sys
-from Seller import Seller
-import StoreUi
 
 
 
 class selelr_signin(QWidget):
 
     def __init__(self, parent, store):
+        super().__init__()
         self.store = store
         self.parent = parent
-        self.setWindowTitle('ثبت نام فروشندگان')
-        self.resize(500, 120)
 
 
         layout = QGridLayout()
 
 
 
-        label1 = QLabel('نام')
+        label1 = QLabel('Name')
         self.lineEdit_name = QLineEdit()
-        self.lineEdit_name.setPlaceholderText('لطفا نام خود را وارد کنید')
+        self.lineEdit_name.setPlaceholderText('please enter your name')
         layout.addWidget(label1, 0, 0)
         layout.addWidget(self.lineEdit_name, 0, 1)
 
-        label2 = QLabel('نام خانوادگی')
+        label2 = QLabel('Last Name')
         self.lineEdit_lastname = QLineEdit()
-        self.lineEdit_lastname.setPlaceholderText('لطفا نام خانوادگی خود را وارد کنید')
+        self.lineEdit_lastname.setPlaceholderText('please enter your last name')
         layout.addWidget(label2, 1, 0)
         layout.addWidget(self.lineEdit_lastname, 1, 1)
 
-        label4 = QLabel('شماره تماس')
+        label3 = QLabel('phone number')
         self.lineEdit_phonenumber = QLineEdit()
-        self.lineEdit_phonenumber.setPlaceholderText('لطفا شماره تلفن را وارد کنید')
-        layout.addWidget(label4, 2, 0)
+        self.lineEdit_phonenumber.setPlaceholderText('please enter your phone number')
+        layout.addWidget(label3, 2, 0)
         layout.addWidget(self.lineEdit_phonenumber, 2, 1)
 
-        label3 = QLabel('محل سکونت')
-        self.lineEdit_city = QLineEdit()
-        self.lineEdit_city.setPlaceholderText('لطفا نام استان محل سکونت خود را وارد کنید')
-        layout.addWidget(label3, 3, 0)
-        layout.addWidget(self.lineEdit_city, 3, 1)
-
-
-        label_password = QLabel('رمز عبور')
+        label_password = QLabel('Password')
         self.lineEdit_password = QLineEdit()
-        self.lineEdit_password.setPlaceholderText('لطفا رمز عبور خود را وارد کنید')
-        layout.addWidget(label_password, 4, 0)
-        layout.addWidget(self.lineEdit_password, 4, 1)
+        self.lineEdit_password.setPlaceholderText('please enter your password')
+        self.lineEdit_password.setEchoMode(QLineEdit.Password)
+        layout.addWidget(label_password, 3, 0)
+        layout.addWidget(self.lineEdit_password, 3, 1)
 
-        label_repeat_password = QLabel('تکرار رمز عبور')
+        label_repeat_password = QLabel('Confirm Password')
         self.lineEdit_repeat_password = QLineEdit()
-        self.lineEdit_repeat_password.setPlaceholderText('لطفا رمز عبور خود را دوباره وارد کنید')
-        layout.addWidget(label_repeat_password, 5, 0)
-        layout.addWidget(self.lineEdit_repeat_password, 5, 1)
+        self.lineEdit_repeat_password.setPlaceholderText('please re-enter your password')
+        self.lineEdit_repeat_password.setEchoMode(QLineEdit.Password)
+        layout.addWidget(label_repeat_password, 4, 0)
+        layout.addWidget(self.lineEdit_repeat_password, 4, 1)
 
-        label_address = QLabel('تکرار رمز عبور')
+        label_address = QLabel('Location')
         self.lineEdit_address = QLineEdit()
-        self.lineEdit_address.setPlaceholderText('لطفا آدرس محل سکونت  خود را  وارد کنید')
-        layout.addWidget(label_address, 6, 0)
-        layout.addWidget(self.lineEdit_address, 6, 1)
+        self.lineEdit_address.setPlaceholderText('please enter your longitude & latitude: (x, y)')
+        layout.addWidget(label_address, 5, 0)
+        layout.addWidget(self.lineEdit_address, 5, 1)
 
-        button_login = QPushButton('جهت ادامه کلیک کنید')
+        label_email = QLabel('E-mail')
+        self.lineEdit_email = QLineEdit()
+        self.lineEdit_email.setPlaceholderText('please enter your email')
+        layout.addWidget(label_email, 6, 0)
+        layout.addWidget(self.lineEdit_email, 6, 1)
+
+        button_login = QPushButton('Click here to Proceed')
         button_login.clicked.connect(self.check)
-        layout.addWidget(7, 0, button_login)
+        layout.addWidget(button_login, 7, 0)
 
         self.setLayout(layout)
 
     def check(self):
         try:
-            Seller(self.store, self.lineEdit_name.text(), self.lineEdit_lastname.text(), self.lineEdit_password.text(),
-                 self.lineEdit_phonenumber.text(), self.lineEdit_city.text(), self.lineEdit_address)
+            self.store.seller_sign_up(self.lineEdit_name.text(), self.lineEdit_lastname.text(), self.lineEdit_password.text(), self.lineEdit_address, self.lineEdit_phonenumber.text(), self.lineEdit_email.text())
+            self.lineEdit_name.setText("")
+            self.lineEdit_lastname.setText("")
+            self.lineEdit_password.setText("")
+            self.lineEdit_address.setText("")
+            self.lineEdit_phonenumber.setText("")
+            self.lineEdit_email.setText("")
+
         except Exception as e:
             message = QMessageBox(self)
-            message.setIcon(QMessageBox.critical())
-            message.setWindowTitle('این شماره تلفن قبلا ثبت شده است')
+            message.setIcon(QMessageBox.Critical)
+            message.setWindowTitle('Error')
             message.setText(str(e))
-            message.setStyleSheet("background_color:white")
-            message.exec
+            message.setStyleSheet("background-color:white")
+            message.exec()
 
 
 
