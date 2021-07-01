@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import (QPushButton, QWidget, QGridLayout, QLabel, QVBoxLay
                              QHBoxLayout, QScrollArea, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
+import ProductUi
 from sellersigninUi import selelr_signin
 from sellerloginUi import seller_login
 from UsersigninUi import user_signin
@@ -9,10 +10,12 @@ from UserloginUi import login
 
 
 class ProductWidget(QWidget):
-    def __init__(self, product, signed_in):
+    def __init__(self, parent, product, user):
         super().__init__()
+        self.parent = parent
+        self.product = product
+        self.user = user
         self.setMouseTracking(True)
-        self.signed_in = signed_in
         layout = QVBoxLayout()
         self.setLayout(layout)
         self.setStyleSheet("background-color:rgb(186,217,189)")
@@ -34,8 +37,9 @@ class ProductWidget(QWidget):
         super().leaveEvent(event)
     
     def mouseReleaseEvent(self, event):
-        if self.signed_in:
-            pass
+        if self.user:
+            page = ProductUi.MainWidget(self.product, self.user)
+            self.parent.goto_page(page, [ProductUi.MainWidget, self.product, self.user])
         else:
             error_message = QMessageBox(self)
             error_message.setIcon(QMessageBox.Critical)
@@ -60,7 +64,7 @@ class MainWidget(QWidget):
         cart_button = QPushButton()
         cart_button.setIcon(QIcon(cart_pic))
         cart_button.setIconSize(cart_pic.rect().size()/7)
-        cart_button.clicked.connect(lambda : self.open_cart(self.user))
+        cart_button.clicked.connect(self.open_cart)
         bar_layout.addWidget(cart_button, stretch=1)
         spacer = QLabel('')
         bar_layout.addWidget(spacer, stretch=9)
@@ -96,8 +100,8 @@ class MainWidget(QWidget):
         products_layout = QGridLayout()
         products_widget.setLayout(products_layout)
         for i, product in enumerate(store.products):
-            product_widget = ProductWidget(product, bool(user))
-            products_layout.addWidget(product_widget, i//4, i%4)
+            product_widget = ProductWidget(parent, product, user)
+            products_layout.addWidget(product_widget, i//6, i%6)
         scroll = QScrollArea()
         scroll.setWidget(products_widget)
 
@@ -107,8 +111,8 @@ class MainWidget(QWidget):
         self.setLayout(main_layout)
 
     
-    def open_cart(self, user):
-        if not user:
+    def open_cart(self):
+        if not self.user:
             error_message = QMessageBox(self)
             error_message.setIcon(QMessageBox.Critical)
             error_message.setWindowTitle("ERROR")
@@ -121,7 +125,7 @@ class MainWidget(QWidget):
 
     def seller_sign_in(self):
         page = seller_login(self.parent, self.store)
-        self.parent.goto_page(page, [seller_login, [self.parent, self.store]])
+        self.parent.goto_page(page, [seller_login, self.parent, self.store])
 
 
     def seller_sign_up(self):
