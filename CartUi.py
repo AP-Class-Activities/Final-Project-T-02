@@ -17,13 +17,14 @@ class ProductWidget(QWidget):
 
         image_label = QLabel()
         image_label.setPixmap(QPixmap(product.image).scaled(180,180))
-        name_label = QLabel(f'<p style="font-size:18px">{product.name}</p>')
-        number_label = QLabel(f'<p style="font-size:18px">number: {number}</p>')
-        price_label = QLabel(f'<p style="font-size:18px">{price}</p>')
+        name_label = QLabel(f'<p style="font-size:18px">{product.name}  </p>')
+        number_label = QLabel(f'<p style="font-size:18px">#{number}  </p>')
+        price_label = QLabel(f'<p style="font-size:18px">${price}</p>')
         layout.addWidget(image_label)
         layout.addWidget(name_label)
         layout.addWidget(number_label)
         layout.addWidget(price_label)
+        layout.setSpacing(0)
 
 
     def enterEvent(self, event):
@@ -53,8 +54,9 @@ class MainWidget(QScrollArea):
         self.user = user
 
         balance_layout = QVBoxLayout()
-        balance_layout.addSpacing(10)
+        balance_layout.addSpacing(90)
         balance_title = QLabel('<h2 style="font-family:Fantasy;color:rgb(59,149,113)"><i>Balance</i></h2>')
+        balance_title.setAlignment(Qt.AlignCenter)
         self.balance = QLabel(f'<h2 style="font-family:Fantasy">Your Current Balance is: {user.balance}</h3>')
         self.increase_balance_amount = QLineEdit()
         self.increase_balance_amount.setPlaceholderText("enter amount")
@@ -74,7 +76,10 @@ class MainWidget(QScrollArea):
         self.bargain = 0
 
         products_layout = QVBoxLayout()
-        products_layout.addSpacing(10)
+        products_layout.addSpacing(90)
+        cart_label = QLabel('<h2 style="font-family:Fantasy;color:rgb(59,149,113)"><i>Shopping Cart</i></h2>')
+        cart_label.setAlignment(Qt.AlignCenter)
+        products_layout.addWidget(cart_label)
         for product, s_n in user.shopping_cart.items():
             product_widget = ProductWidget(product, product.price(s_n[0]), s_n[1], user)
             products_layout.addWidget(product_widget)
@@ -84,7 +89,7 @@ class MainWidget(QScrollArea):
         products_layout.addWidget(self.total_label)
 
         promocode_layout = QVBoxLayout()
-        promocode_layout.addSpacing(10)
+        promocode_layout.addSpacing(90)
         promocode_title = QLabel('<h2 style="font-family:Fantasy;color:rgb(59,149,113)"><i>Use a Promo Code</i></h2>')
         promocode_title.setAlignment(Qt.AlignCenter)
         self.promocode = QLineEdit()
@@ -105,11 +110,12 @@ class MainWidget(QScrollArea):
         pay_button.setStyleSheet("background-color:rgb(32,154,26);font:21px;font-weight:bold;")
         pay_button.clicked.connect(self.pay)
         self.pay_result = QLabel("")
+        self.pay_result.setAlignment(Qt.AlignCenter)
         products_layout.addWidget(pay_button)
         products_layout.addWidget(self.pay_result)
 
         main_layout = QHBoxLayout()
-        main_layout.setSpacing(60)
+        main_layout.setSpacing(50)
         main_layout.addLayout(promocode_layout)
         main_layout.addLayout(products_layout)
         main_layout.addLayout(balance_layout)
@@ -136,8 +142,11 @@ class MainWidget(QScrollArea):
 
 
     def pay(self):
-        self.user.pay()
         self.user.Increase_wallet_balance(self.bargain)
-        self.balance.setText(f'<h2 style="font-family:Fantasy">Your Current Balance is: {self.user.balance}</h3>')
-        self.pay_result.setText('<h3 style="font-family:Fantasy;color:rgb(59,149,113)">Success!</h3>')
+        if self.user.pay():
+            self.balance.setText(f'<h2 style="font-family:Fantasy">Your Current Balance is: {self.user.balance}</h3>')
+            self.pay_result.setText('<h3 style="font-family:Fantasy;color:rgb(59,149,113)">Success!</h3>')
+        else:
+            self.pay_result.setText('<h3 style="font-family:Fantasy;color:red">Not Enough Balance!</h3>')
+
 
