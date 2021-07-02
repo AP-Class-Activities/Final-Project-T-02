@@ -22,5 +22,5 @@ Back-end is where the database is managed and all datatypes are made and every f
 - *User.py*
 - *Seller.py*
 
-Front-end is the where the GUI is handled. every file that ends with *Ui* is part of the front-end.
+Front-end is the where the GUI is handled. Every file that ends with *Ui* is part of the front-end.
 
