@@ -1,4 +1,3 @@
-from os import spawnlp
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
                              QComboBox, QSpinBox, QScrollArea, QSizePolicy, QPlainTextEdit)
 from PyQt5.QtCore import Qt
